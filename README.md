@@ -1,5 +1,5 @@
 ### EX7 Implementation of Link Analysis using HITS Algorithm
-### DATE: 
+### DATE: 27.02.26
 ### AIM: To implement Link Analysis using HITS Algorithm in Python.
 ### Description:
 <div align = "justify">
@@ -32,66 +32,93 @@ in a network of web pages based on the structure of the links between them.
     <p>    Visualize using bar chart to represent authority and hub scores.
 
 ### Program:
-
-```python
+~~~
 import numpy as np
 import matplotlib.pyplot as plt
 
-def hits_algorithm(adjacency_matrix, max_iterations=100, tol=1.0e-6):
-    num_nodes = len(adjacency_matrix)
-    authority_scores = np.ones(num_nodes)
-    hub_scores = np.ones(num_nodes)
-    
-    for i in range(max_iterations):
-        # Authority update
+def hits_algorithm_fixed(adj_matrix, iterations=17):
+    num_nodes = len(adj_matrix)
 
-             /*WRITE YOUR CODE HERE
-        
-        # Hub update
+    # Initialize scores
+    authority = np.ones(num_nodes)
+    hub = np.ones(num_nodes)
 
-             /*WRITE YOUR CODE HERE
-        
-        # Check convergence
+    print("HITS Algorithm (3x3 Matrix - 17 Iterations)\n")
+    print("Iteration\tAuthority Scores\t\tHub Scores\n")
 
-             /*WRITE YOUR CODE HERE
-        
-        if authority_diff < tol and hub_diff < tol:
-            break
-        
-        authority_scores = new_authority_scores
-        hub_scores = new_hub_scores
-    
-    return authority_scores, hub_scores
+    for i in range(iterations):
+        # Authority Update
+        authority = np.dot(adj_matrix.T, hub)
 
-# Example adjacency matrix (replace this with your own data)
-# For simplicity, using a random adjacency matrix
+        # Normalize Authority
+        if np.sum(authority) != 0:
+            authority = authority / np.sum(authority)
+
+        # Hub Update
+        hub = np.dot(adj_matrix, authority)
+
+        # Normalize Hub
+        if np.sum(hub) != 0:
+            hub = hub / np.sum(hub)
+
+        # Print iteration results
+        print(f"{i+1}\t\t{np.round(authority,4)}\t{np.round(hub,4)}")
+
+    return authority, hub
+
+
+# 🔹 3x3 Matrix (Example)
 adj_matrix = np.array([
     [0, 1, 1],
     [1, 0, 0],
     [1, 0, 0]
 ])
 
-# Run HITS algorithm
-authority, hub = hits_algorithm(adj_matrix)
-for i in range(len(authority)):
-    print(f"Node {i}: Authority Score = {authority[i]:.4f}, Hub Score = {hub[i]:.4f}")
+# Run Algorithm
+authority, hub = hits_algorithm_fixed(adj_matrix, iterations=17)
 
-# bar chart of authority vs hub scores
+# ------------------------------
+# Final Results
+# ------------------------------
+print("\nFinal Authority Scores:", np.round(authority, 4))
+print("Final Hub Scores:", np.round(hub, 4))
 
+# ------------------------------
+# Ranking
+# ------------------------------
+auth_rank = sorted(range(len(authority)), key=lambda i: authority[i], reverse=True)
+hub_rank = sorted(range(len(hub)), key=lambda i: hub[i], reverse=True)
+
+print("\nAuthority Ranking:")
+for i in auth_rank:
+    print(f"Node {i} - {authority[i]:.4f}")
+
+print("\nHub Ranking:")
+for i in hub_rank:
+    print(f"Node {i} - {hub[i]:.4f}")
+
+# ------------------------------
+# Bar Chart
+# ------------------------------
 nodes = np.arange(len(authority))
 bar_width = 0.35
+
 plt.figure(figsize=(8, 6))
-plt.bar(nodes - bar_width/2, authority, bar_width, label='Authority', color='blue')
-plt.bar(nodes + bar_width/2, hub, bar_width, label='Hub', color='green')
-plt.xlabel('Node')
+plt.bar(nodes - bar_width/2, authority, bar_width, label='Authority')
+plt.bar(nodes + bar_width/2, hub, bar_width, label='Hub')
+
+plt.xlabel('Nodes')
 plt.ylabel('Scores')
-plt.title('Authority and Hub Scores for Each Node')
+plt.title('HITS Algorithm (17 Iterations)')
 plt.xticks(nodes, [f'Node {i}' for i in nodes])
 plt.legend()
 plt.tight_layout()
 plt.show()
-```
+~~~
+
 
 ### Output:
+<img width="1582" height="952" alt="image" src="https://github.com/user-attachments/assets/82544661-33e6-44ef-bd05-fd3a2857f60e" />
 
 ### Result:
+Link Analysis using HITS Algorithm in Python Executed Successfully.
